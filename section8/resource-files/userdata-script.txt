@@ -1,32 +1,37 @@
 #!/bin/bash
-# Update the package repository
+
+# Update system packages
 sudo dnf update -y
 
-# Install git
-sudo dnf install -y git
+# Install Git, Apache, PHP, and MariaDB
+sudo dnf install -y git httpd php php-mysqli mariadb105
 
-# Install the necessary packages
-sudo dnf install -y httpd php php-mysqli mariadb105
-
-# Start and enable the Apache service
+# Start and enable Apache
 sudo systemctl enable httpd
 sudo systemctl start httpd
 
-# Add the ec2-user to the apache group
-usermod -a -G apache ec2-user
+# Add ec2-user to the apache group
+sudo usermod -a -G apache ec2-user
 
-# Set ownership and permissions for the web directory
+# Set proper ownership and permissions for the web directory
 sudo chown -R ec2-user:apache /var/www
 sudo chmod 2775 /var/www
-
-# Set permissions for directories and files within /var/www
 sudo find /var/www -type d -exec chmod 2775 {} \;
 sudo find /var/www -type f -exec chmod 0664 {} \;
 
-# Clone or Copy files from your github repository
+# Clone your GitHub repository
+cd /home/ec2-user
 git clone https://github.com/george-848/aws-3_Tier_App.git
-sudo cp -r home/ec2-user/aws-3_Tier_App/section8/resource-files/VeganStudioSourceCode/v5/*  /var/www/html
-sudo rm home/ec2-user/aws-3_Tier_App --recursive
 
-# Copy files from the S3 bucket to the web directory
-# aws s3 cp s3://[Source Bucket] /var/www/html --recursive
+# Move the app files to the Apache web root
+cd aws-3_Tier_App/section8/resource-files/VeganStudioSourceCode/v5/
+sudo mv * /var/www/html/
+
+# Clean up (remove the cloned repo)
+cd /home/ec2-user
+sudo rm -rf aws-3_Tier_App
+
+# Restart Apache to load the new files
+sudo systemctl restart httpd
+
+echo "Deployment completed successfully."
