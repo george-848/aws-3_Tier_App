@@ -1,11 +1,11 @@
 <?php
-define('DB_SERVER', 'Enter Your Database Endpoint DNS Name Here');
+define('DB_SERVER', 'mydb.cktikeswg4mv.us-east-1.rds.amazonaws.com');
 
-define('DB_USERNAME', 'Enter Your Database Username');
+define('DB_USERNAME', 'admin');
 
-define('DB_PASSWORD', 'Enter Your Database Password');
+define('DB_PASSWORD', 'Admin1234');
 
-define('DB_DATABASE', 'Enter Your Database Name');
+define('DB_DATABASE', 'mydb');
 
 /* Connect to MySQL and select the database. */
 $connection = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD);
